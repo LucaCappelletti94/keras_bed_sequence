@@ -28,12 +28,13 @@ def find_version(*file_paths):
 
 __version__ = find_version("keras_bed_sequence", "__version__.py")
 
-test_deps =[
+test_deps = [
     "pytest",
     "pytest-cov",
     "coveralls",
     "validate_version_code",
-    "codacy-coverage"
+    "codacy-coverage",
+    "silence_tensorflow"
 ]
 
 extras = {
@@ -59,6 +60,11 @@ setup(
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
     tests_require=test_deps,
     # Add here the package dependencies
-    install_requires=[],
+    install_requires=[
+        "numpy",
+        "pandas",
+        "tensorflow",
+        "ucsc_genomes_downloader"
+    ],
     extras_require=extras,
 )
