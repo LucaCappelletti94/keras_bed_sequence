@@ -64,6 +64,7 @@ setup(
         "numpy",
         "pandas",
         "tensorflow",
+        "keras_mixed_sequence",
         "ucsc_genomes_downloader"
     ],
     extras_require=extras,
