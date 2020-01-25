@@ -249,4 +249,4 @@ to train our model:
 
 .. |code_climate_coverage| image:: https://api.codeclimate.com/v1/badges/d601fb2c7485f1ac3433/test_coverage
     :target: https://codeclimate.com/github/LucaCappelletti94/keras_bed_sequence/test_coverage
-    :alt: Code Climate 
+    :alt: Code Climate
