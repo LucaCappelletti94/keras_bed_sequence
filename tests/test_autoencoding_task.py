@@ -1,8 +1,8 @@
-from keras_bed_sequence import BedSequence
+import os
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D, Reshape, Conv2DTranspose
 from keras_mixed_sequence import MixedSequence
-import os
+from keras_bed_sequence import BedSequence
 
 
 def build_model():
@@ -19,7 +19,7 @@ def build_model():
     return model
 
 
-def test_bed_sequence():
+def test_model_autoencoder():
     batch_size = 32
     bed_sequence = BedSequence(
         "hg19",

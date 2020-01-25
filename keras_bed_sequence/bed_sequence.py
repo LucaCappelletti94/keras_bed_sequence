@@ -1,3 +1,4 @@
+"""Keras Sequence to lazily one-hot encode sequences from a given bed file."""
 from typing import Dict, Tuple, Union
 from tensorflow.keras.utils import Sequence, to_categorical
 import pandas as pd
@@ -8,6 +9,199 @@ from keras_mixed_sequence.utils import sequence_length, batch_slice
 
 
 class BedSequence(Sequence):
+    """Keras Sequence to lazily one-hot encode sequences from a given bed file.
+
+    Usage examples
+    ------------------------
+    The following examples are tested within the package test suite.
+
+    Classification task example
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Let's start by building an extremely simple classification task model:
+
+    .. code:: python
+
+        from tensorflow.keras.models import Sequential
+        from tensorflow.keras.layers import Dense, Flatten
+        from keras_mixed_sequence import MixedSequence
+
+        model = Sequential([
+            Flatten(),
+            Dense(1)
+        ])
+        model.compile(
+            optimizer="nadam",
+            loss="MSE"
+        )
+
+    We then proceed to load the training data into Keras Sequences,
+    using in particular a MixedSequence object:
+
+    .. code:: python
+
+        import numpy as np
+        from keras_mixed_sequence import MixedSequence
+        from keras_bed_sequence import BedSequence
+
+        batch_size = 32
+        bed_sequence = BedSequence(
+            "hg19",
+            "path/to/bed/files.bed",
+            batch_size
+        )
+        y = the_output_values
+        mixed_sequence = MixedSequence(
+            x=bed_sequence,
+            y=y,
+            batch_size=batch_size
+        )
+
+    Finally we can proceed to use the obtained MixedSequence
+    to train our model:
+
+    .. code:: python
+
+        model.fit_generator(
+            mixed_sequence,
+            steps_per_epoch=mixed_sequence.steps_per_epoch,
+            epochs=2,
+            verbose=0,
+            shuffle=True
+        )
+
+    Auto-encoding task example
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Let's start by building an extremely simple auto-encoding task model:
+
+    .. code:: python
+
+        from tensorflow.keras.models import Sequential
+        from tensorflow.keras.layers import Conv2D, Reshape, Conv2DTranspose
+
+        model = Sequential([
+            Reshape((200, 4, 1)),
+            Conv2D(16, kernel_size=3, activation="relu"),
+            Conv2DTranspose(1, kernel_size=3, activation="relu"),
+            Reshape((-1, 200, 4))
+        ])
+        model.compile(
+            optimizer="nadam",
+            loss="MSE"
+        )
+
+    We then proceed to load the training data into Keras Sequences,
+    using in particular a MixedSequence object:
+
+    .. code:: python
+
+        import numpy as np
+        from keras_mixed_sequence import MixedSequence
+        from keras_bed_sequence import BedSequence
+
+        batch_size = 32
+        bed_sequence = BedSequence(
+            "hg19",
+            "path/to/bed/files.bed",
+            batch_size
+        )
+        mixed_sequence = MixedSequence(
+            x=bed_sequence,
+            y=bed_sequence,
+            batch_size=batch_size
+        )
+
+    Finally we can proceed to use the obtained MixedSequence
+    to train our model:
+
+    .. code:: python
+
+        model.fit_generator(
+            mixed_sequence,
+            steps_per_epoch=mixed_sequence.steps_per_epoch,
+            epochs=2,
+            verbose=0,
+            shuffle=True
+        )
+
+    Multi-task example (classification + auto-encoding)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Let's start by building an extremely simple multi-tasks model:
+
+    .. code:: python
+
+        from tensorflow.keras.models import Model
+        from tensorflow.keras.layers import Dense, Conv2D, Reshape, Flatten, Conv2DTranspose, Input
+
+        inputs = Input(shape=(200, 4))
+
+        flattened = Flatten()(inputs)
+
+        output1 = Dense(
+            units=1,
+            activation="relu",
+            name="output1"
+        )(flattened)
+
+        hidden = Reshape((200, 4, 1))(inputs)
+        hidden = Conv2D(16, kernel_size=3, activation="relu")(hidden)
+        hidden = Conv2DTranspose(1, kernel_size=3, activation="relu")(hidden)
+        output2 = Reshape((200, 4), name="output2")(hidden)
+
+        model = Model(
+            inputs=inputs,
+            outputs=[output1, output2],
+            name="my_model"
+        )
+
+        model.compile(
+            optimizer="nadam",
+            loss="MSE"
+        )
+
+    We then proceed to load the training data into Keras Sequences,
+    using in particular a MixedSequence object:
+
+    .. code:: python
+
+        import numpy as np
+        from keras_mixed_sequence import MixedSequence
+        from keras_bed_sequence import BedSequence
+
+        batch_size = 32
+        bed_sequence = BedSequence(
+            "hg19",
+            "{cwd}/test.bed".format(
+                cwd=os.path.dirname(os.path.abspath(__file__))
+            ),
+            batch_size
+        )
+        y = np.random.randint(
+            2,
+            size=(bed_sequence.samples_nuber, 1)
+        )
+        mixed_sequence = MixedSequence(
+            bed_sequence,
+            {
+                "output1": y,
+                "output2": bed_sequence
+            },
+            batch_size
+        )
+
+    Finally we can proceed to use the obtained MixedSequence
+    to train our model:
+
+    .. code:: python
+
+        model.fit_generator(
+            mixed_sequence,
+            steps_per_epoch=mixed_sequence.steps_per_epoch,
+            epochs=2,
+            verbose=0,
+            shuffle=True
+        )
+
+    """
 
     def __init__(
         self,
@@ -80,6 +274,11 @@ class BedSequence(Sequence):
     def __len__(self) -> int:
         """Return length of bed generator."""
         return sequence_length(self._x, self._batch_size)
+
+    @property
+    def samples_nuber(self) -> int:
+        """Return number of available samples."""
+        return len(self._x)
 
     def __getitem__(self, idx: int) -> Tuple[np.ndarray, np.ndarray]:
         """Return batch corresponding to given index.
