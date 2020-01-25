@@ -239,7 +239,7 @@ to train our model:
     :target: https://pepy.tech/badge/keras-bed-sequence
     :alt: Pypi total project downloads
 
-.. |codacy|  image:: https://api.codacy.com/project/badge/Grade/6bb591f3d405443a9549967eac35b723
+.. |codacy| image:: https://api.codacy.com/project/badge/Grade/6bb591f3d405443a9549967eac35b723
     :target: https://www.codacy.com/manual/LucaCappelletti94/keras_bed_sequence?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=LucaCappelletti94/keras_bed_sequence&amp;utm_campaign=Badge_Grade
     :alt: Codacy Maintainability
 
