@@ -231,12 +231,12 @@ to train our model:
     :target: https://coveralls.io/github/LucaCappelletti94/keras_bed_sequence?branch=master
     :alt: Coveralls Coverage
 
-.. |pip| image:: https://badge.fury.io/py/keras_bed_sequence.svg
-    :target: https://badge.fury.io/py/keras_bed_sequence
+.. |pip| image:: https://badge.fury.io/py/keras-bed-sequence.svg
+    :target: https://badge.fury.io/py/keras-bed-sequence
     :alt: Pypi project
 
-.. |downloads| image:: https://pepy.tech/badge/keras_bed_sequence
-    :target: https://pepy.tech/badge/keras_bed_sequence
+.. |downloads| image:: https://pepy.tech/badge/keras-bed-sequence
+    :target: https://pepy.tech/badge/keras-bed-sequence
     :alt: Pypi total project downloads
 
 .. |codacy|  image:: https://api.codacy.com/project/badge/Grade/6bb591f3d405443a9549967eac35b723
