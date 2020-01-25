@@ -29,7 +29,7 @@ class BedSequence(Sequence):
             Either path to file or Pandas DataFrame containing minimal bed columns,
             like "chrom", "chromStart" and "chromEnd".
         batch_size: int = 32,
-            Batch size to be returned for each request. 
+            Batch size to be returned for each request.
             By default is 32.
         verbose: bool = True,
             Whetever to show a loading bar.
