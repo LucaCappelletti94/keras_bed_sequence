@@ -212,7 +212,7 @@ class BedSequence(Sequence):
         nucleotides: str = "actg",
         genome_kwargs: Dict = None
     ):
-        """Return new BedGenerator object.
+        """Return new BedSequence object.
 
         Parameters
         --------------------
@@ -239,7 +239,7 @@ class BedSequence(Sequence):
 
         Returns
         --------------------
-        Return new BedGenerator object.
+        Return new BedSequence object.
         """
         # If the given bed file is provided
         # we load the file using pandas.
@@ -252,6 +252,8 @@ class BedSequence(Sequence):
             raise ValueError(
                 "The bed file regions must have the same length!"
             )
+
+        self._window_length = (bed.chromEnd - bed.chromStart).values[0]
 
         # We retrieve the required chromosomes
         # from the required assembly.
@@ -286,6 +288,11 @@ class BedSequence(Sequence):
     def __len__(self) -> int:
         """Return length of bed generator."""
         return sequence_length(self._x, self._batch_size)
+
+    @property
+    def window_length(self) -> int:
+        """Return number of nucleotides in a window."""
+        return self._window_length
 
     @property
     def samples_nuber(self) -> int:

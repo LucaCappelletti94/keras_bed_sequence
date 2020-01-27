@@ -27,6 +27,7 @@ def test_classification_task():
         ),
         batch_size
     )
+    assert 200 == bed_sequence.window_length
     y = np.random.randint(
         2,
         size=(bed_sequence.samples_nuber, 1)
