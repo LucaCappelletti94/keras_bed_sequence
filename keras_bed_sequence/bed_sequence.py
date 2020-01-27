@@ -232,6 +232,11 @@ class BedSequence(Sequence):
         genome_kwargs: Dict = None,
             Parameters to pass to the Genome object.
 
+        Raises
+        --------------------
+        ValueError:
+            If the bed file regions does not have the same length.
+
         Returns
         --------------------
         Return new BedGenerator object.
@@ -240,6 +245,13 @@ class BedSequence(Sequence):
         # we load the file using pandas.
         if isinstance(bed, str):
             bed = pd.read_csv(bed, sep="\t")
+
+        # Every window in the bed file must be
+        # of the same length.
+        if len(set((bed.chromEnd - bed.chromStart).values)) != 1:
+            raise ValueError(
+                "The bed file regions must have the same length!"
+            )
 
         # We retrieve the required chromosomes
         # from the required assembly.
