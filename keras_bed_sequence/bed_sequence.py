@@ -210,6 +210,8 @@ class BedSequence(Sequence):
         batch_size: int = 32,
         verbose: bool = True,
         nucleotides: str = "actg",
+        seed: int = 42,
+        elapsed_epochs: int = 0,
         genome_kwargs: Dict = None
     ):
         """Return new BedSequence object.
@@ -229,6 +231,10 @@ class BedSequence(Sequence):
             Whetever to show a loading bar.
         nucleotides: str = "actg",
             Nucleotides to consider when one-hot encoding.
+        seed: int = 42,
+            Starting seed to use if shuffling the dataset.
+        elapsed_epochs: int = 0,
+            Number of elapsed epochs to init state of generator.
         genome_kwargs: Dict = None,
             Parameters to pass to the Genome object.
 
@@ -265,6 +271,7 @@ class BedSequence(Sequence):
         )
 
         self._batch_size, self._nucleotides = batch_size, nucleotides
+        self._seed, self._elapsed_epochs = seed, elapsed_epochs
 
         # We extract the sequences of the bed file from
         # the given genome.
@@ -283,7 +290,9 @@ class BedSequence(Sequence):
 
     def on_epoch_end(self):
         """Shuffle private bed object on every epoch end."""
-        np.random.shuffle(self._x)
+        state = np.random.RandomState(seed=self._seed + self._elapsed_epochs)
+        self._elapsed_epochs += 1
+        state.shuffle(self._x)
 
     def __len__(self) -> int:
         """Return length of bed generator."""
