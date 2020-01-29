@@ -299,6 +299,11 @@ class BedSequence(Sequence):
         return sequence_length(self._x, self._batch_size)
 
     @property
+    def steps_per_epoch(self) -> int:
+        """Return length of bed generator."""
+        return len(self)
+
+    @property
     def window_length(self) -> int:
         """Return number of nucleotides in a window."""
         return self._window_length

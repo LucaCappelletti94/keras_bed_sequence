@@ -29,6 +29,7 @@ def test_model_autoencoder():
         batch_size
     )
     mixed_sequence = MixedSequence(bed_sequence, bed_sequence, batch_size)
+    assert bed_sequence.steps_per_epoch == mixed_sequence.steps_per_epoch
     model = build_model()
     model.fit_generator(
         mixed_sequence,
