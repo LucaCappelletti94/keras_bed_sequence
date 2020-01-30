@@ -54,12 +54,12 @@ def nucleotides_to_numbers(nucleotides: str, sequences: pd.Series, verbose: bool
     tasks = (
         {
             "nucleotides": nucleotides,
-            "sequences": sequences[total*i:total*(i+1)]
+            "sequences": sequences[10000*i:10000*(i+1)]
         }
         for i in range(total)
     )
     with Pool(min(cpu_count(), total)) as p:
-        encoded = np.vstack(list(tqdm(
+        encoded = np.hstack(list(tqdm(
             p.imap(
                 _nucleotides_to_numbers_wrapper,
                 tasks
