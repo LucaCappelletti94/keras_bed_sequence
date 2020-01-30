@@ -66,6 +66,8 @@ def nucleotides_to_numbers(nucleotides: str, sequences: pd.Series, verbose: bool
             ),
             desc="Converting nucleotides to numeric classes",
             disable=not verbose,
+            dynamic_ncols=True,
+            leave=False,
             total=total
         )))
         p.close()
