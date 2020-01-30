@@ -4,8 +4,8 @@ from tensorflow.keras.utils import Sequence, to_categorical
 import pandas as pd
 import numpy as np
 from ucsc_genomes_downloader import Genome
-from tqdm.auto import tqdm
 from keras_mixed_sequence.utils import sequence_length, batch_slice
+from .utils import nucleotides_to_numbers
 
 
 class BedSequence(Sequence):
@@ -277,16 +277,13 @@ class BedSequence(Sequence):
         # the given genome.
         sequences = self._genome.bed_to_sequence(bed).sequence
 
-        self._x = np.array([
-            [
-                self._nucleotides.find(nucleotide)
-                for nucleotide in sequence.lower()
-            ] for sequence in tqdm(
-                sequences,
-                desc="Converting nucleotides to numeric classes",
-                disable=not verbose
-            )
-        ], dtype=np.int8)
+        # We encode the nucleotide sequences
+        # as small integers
+        self._x = nucleotides_to_numbers(
+            self._nucleotides,
+            sequences,
+            verbose=verbose
+        )
 
     def on_epoch_end(self):
         """Shuffle private bed object on every epoch end."""
