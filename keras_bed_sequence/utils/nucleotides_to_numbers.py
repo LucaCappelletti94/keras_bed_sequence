@@ -59,7 +59,7 @@ def nucleotides_to_numbers(nucleotides: str, sequences: pd.Series, verbose: bool
         for i in range(total)
     )
     with Pool(min(cpu_count(), total)) as p:
-        encoded = np.hstack(list(tqdm(
+        encoded = np.vstack(list(tqdm(
             p.imap(
                 _nucleotides_to_numbers_wrapper,
                 tasks
