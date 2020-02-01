@@ -28,6 +28,8 @@ def test_classification_task():
         batch_size
     )
     assert 200 == bed_sequence.window_length
+    assert bed_sequence[0].shape == (batch_size, 200, 4)
+    assert set((0.0, 1.0)) == set(np.unique(bed_sequence[0]))
     y = np.random.randint(
         2,
         size=(bed_sequence.samples_number, 1)
