@@ -177,7 +177,7 @@ class BedSequence(Sequence):
         )
         y = np.random.randint(
             2,
-            size=(bed_sequence.samples_nuber, 1)
+            size=(bed_sequence.samples_number, 1)
         )
         mixed_sequence = MixedSequence(
             bed_sequence,
@@ -306,7 +306,7 @@ class BedSequence(Sequence):
         return self._window_length
 
     @property
-    def samples_nuber(self) -> int:
+    def samples_number(self) -> int:
         """Return number of available samples."""
         return len(self._x)
 

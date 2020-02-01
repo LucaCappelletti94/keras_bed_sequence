@@ -47,7 +47,7 @@ def test_bed_sequence():
     )
     y = np.random.randint(
         2,
-        size=(bed_sequence.samples_nuber, 1)
+        size=(bed_sequence.samples_number, 1)
     )
     mixed_sequence = MixedSequence(
         bed_sequence,
