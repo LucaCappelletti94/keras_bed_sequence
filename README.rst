@@ -44,7 +44,7 @@ Let's start by building an extremely simple classification task model:
     )
 
 We then proceed to load the training data into Keras Sequences,
-using in particular a MixedSequence object:
+using, in particular, a MixedSequence object:
 
 .. code:: python
 
@@ -65,7 +65,7 @@ using in particular a MixedSequence object:
         batch_size=batch_size
     )
 
-Finally we can proceed to use the obtained MixedSequence
+Finally, we can proceed to use the obtained MixedSequence
 to train our model:
 
 .. code:: python
@@ -99,7 +99,7 @@ Let's start by building an extremely simple auto-encoding task model:
     )
 
 We then proceed to load the training data into Keras Sequences,
-using in particular a MixedSequence object:
+using, in particular, a MixedSequence object:
 
 .. code:: python
 
@@ -119,7 +119,7 @@ using in particular a MixedSequence object:
         batch_size=batch_size
     )
 
-Finally we can proceed to use the obtained MixedSequence
+Finally, we can proceed to use the obtained MixedSequence
 to train our model:
 
 .. code:: python
@@ -168,7 +168,7 @@ Let's start by building an extremely simple multi-tasks model:
     )
 
 We then proceed to load the training data into Keras Sequences,
-using in particular a MixedSequence object:
+using, in particular, a MixedSequence object:
 
 .. code:: python
 
@@ -197,7 +197,7 @@ using in particular a MixedSequence object:
         batch_size
     )
 
-Finally we can proceed to use the obtained MixedSequence
+Finally, we can proceed to use the obtained MixedSequence
 to train our model:
 
 .. code:: python
