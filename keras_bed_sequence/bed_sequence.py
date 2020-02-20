@@ -270,7 +270,7 @@ class BedSequence(Sequence):
             **({} if genome_kwargs is None else genome_kwargs)
         )
 
-        self._batch_size, self._nucleotides = batch_size, nucleotides
+        self._batch_size = batch_size
         self._seed, self._elapsed_epochs = seed, elapsed_epochs
 
         # We extract the sequences of the bed file from
@@ -280,10 +280,12 @@ class BedSequence(Sequence):
         # We encode the nucleotide sequences
         # as small integers
         self._x = nucleotides_to_numbers(
-            self._nucleotides,
+            nucleotides,
             sequences,
             verbose=verbose
         )
+
+        self._nucleotides_number = len(nucleotides)
 
     def on_epoch_end(self):
         """Shuffle private bed object on every epoch end."""
@@ -306,6 +308,16 @@ class BedSequence(Sequence):
         return self._window_length
 
     @property
+    def nucleotides_number(self) -> int:
+        """Return number of nucleotides considered."""
+        return self._nucleotides_number
+
+    @property
+    def batch_size(self) -> int:
+        """Return batch size to be rendered."""
+        return self._batch_size
+
+    @property
     def samples_number(self) -> int:
         """Return number of available samples."""
         return len(self._x)
@@ -322,7 +334,8 @@ class BedSequence(Sequence):
         ---------------
         Return Tuple containing X and Y numpy arrays corresponding to given batch index.
         """
+        start, end = batch_slice(idx, self.batch_size)
         return to_categorical(
-            self._x[batch_slice(idx, self._batch_size)],
-            num_classes=len(self._nucleotides)
+            self._x[start:end],
+            num_classes=self.nucleotides_number
         )

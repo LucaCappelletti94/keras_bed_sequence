@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: keras-bed-sequence
-Version: 1.0.8
+Version: 1.0.9
 Summary: Lazily one-hot encoding bed sequences using Keras Sequence.
 Home-page: https://github.com/LucaCappelletti94/keras_bed_sequence
 Author: Luca Cappelletti
@@ -23,7 +23,7 @@ Description: keras_bed_sequence
         
         Tests Coverage
         ----------------------------------------------
-        Since some software handling coverages sometime get
+        Since some software handling coverages sometimes get
         slightly different results, here's three of them:
         
         |coveralls| |sonar_coverage| |code_climate_coverage|
@@ -52,7 +52,7 @@ Description: keras_bed_sequence
             )
         
         We then proceed to load the training data into Keras Sequences,
-        using in particular a MixedSequence object:
+        using, in particular, a MixedSequence object:
         
         .. code:: python
         
@@ -73,7 +73,7 @@ Description: keras_bed_sequence
                 batch_size=batch_size
             )
         
-        Finally we can proceed to use the obtained MixedSequence
+        Finally, we can proceed to use the obtained MixedSequence
         to train our model:
         
         .. code:: python
@@ -107,7 +107,7 @@ Description: keras_bed_sequence
             )
         
         We then proceed to load the training data into Keras Sequences,
-        using in particular a MixedSequence object:
+        using, in particular, a MixedSequence object:
         
         .. code:: python
         
@@ -127,7 +127,7 @@ Description: keras_bed_sequence
                 batch_size=batch_size
             )
         
-        Finally we can proceed to use the obtained MixedSequence
+        Finally, we can proceed to use the obtained MixedSequence
         to train our model:
         
         .. code:: python
@@ -176,7 +176,7 @@ Description: keras_bed_sequence
             )
         
         We then proceed to load the training data into Keras Sequences,
-        using in particular a MixedSequence object:
+        using, in particular, a MixedSequence object:
         
         .. code:: python
         
@@ -205,7 +205,7 @@ Description: keras_bed_sequence
                 batch_size
             )
         
-        Finally we can proceed to use the obtained MixedSequence
+        Finally, we can proceed to use the obtained MixedSequence
         to train our model:
         
         .. code:: python

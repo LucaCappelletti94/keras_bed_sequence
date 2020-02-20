@@ -12,4 +12,5 @@ def test_bed_sequence():
         batch_size
     )
     x = bed_sequence[0]
+    assert (bed_sequence[0] == bed_sequence[0]).all()
     assert x.shape == (32, 200, 4)
