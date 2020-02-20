@@ -334,8 +334,7 @@ class BedSequence(Sequence):
         ---------------
         Return Tuple containing X and Y numpy arrays corresponding to given batch index.
         """
-        start, end = batch_slice(idx, self.batch_size)
         return to_categorical(
-            self._x[start:end],
+            self._x[batch_slice(idx, self.batch_size)],
             num_classes=self.nucleotides_number
         )
