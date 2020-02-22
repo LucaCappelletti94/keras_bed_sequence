@@ -320,6 +320,11 @@ class BedSequence(Sequence):
         """Return batch size to be rendered."""
         return self._batch_size
 
+    @batch_size.setter
+    def batch_size(self, batch_size: int):
+        """Set batch size to given value."""
+        self._batch_size = batch_size
+
     @property
     def samples_number(self) -> int:
         """Return number of available samples."""

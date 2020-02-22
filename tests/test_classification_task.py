@@ -19,16 +19,17 @@ def build_model():
 
 
 def test_classification_task():
-    batch_size = 32
     bed_sequence = BedSequence(
         "hg19",
         "{cwd}/test.bed".format(
             cwd=os.path.dirname(os.path.abspath(__file__))
         ),
-        batch_size
+        batch_size=32
     )
     assert 200 == bed_sequence.window_length
-    assert bed_sequence[0].shape == (batch_size, 200, 4)
+    assert bed_sequence[0].shape == (bed_sequence.batch_size, 200, 4)
+    bed_sequence.batch_size = 64
+    assert bed_sequence[0].shape == (bed_sequence.batch_size, 200, 4)
     assert set((0.0, 1.0)) == set(np.unique(bed_sequence[0]))
     y = np.random.randint(
         2,
@@ -37,7 +38,7 @@ def test_classification_task():
     mixed_sequence = MixedSequence(
         x=bed_sequence,
         y=y,
-        batch_size=batch_size
+        batch_size=bed_sequence.batch_size
     )
     model = build_model()
     model.fit_generator(
