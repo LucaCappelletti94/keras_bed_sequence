@@ -109,7 +109,7 @@ using, in particular, a MixedSequence object:
 
     batch_size = 32
     bed_sequence = BedSequence(
-        "hg19",
+        Genome("hg19", chromosomes=["chr1"]),
         "path/to/bed/files.bed",
         batch_size
     )
