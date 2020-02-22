@@ -205,7 +205,7 @@ class BedSequence(Sequence):
 
     def __init__(
         self,
-        assembly: str,
+        assembly: Union[str, Genome],
         bed: Union[pd.DataFrame, str],
         batch_size: int = 32,
         verbose: bool = True,
@@ -218,7 +218,7 @@ class BedSequence(Sequence):
 
         Parameters
         --------------------
-        assembly: str,
+        assembly: Union[str, Genome],
             Genomic assembly from ucsc from which to extract sequences.
             For instance, "hg19", "hg38" or "mm10".
         bed: Union[pd.DataFrame, str],
@@ -263,12 +263,15 @@ class BedSequence(Sequence):
 
         # We retrieve the required chromosomes
         # from the required assembly.
-        self._genome = Genome(
-            assembly=assembly,
-            chromosomes=bed.chrom.unique(),
-            verbose=verbose,
-            **({} if genome_kwargs is None else genome_kwargs)
-        )
+        if isinstance(assembly, Genome):
+            self._genome = assembly
+        else:
+            self._genome = Genome(
+                assembly=assembly,
+                chromosomes=bed.chrom.unique(),
+                verbose=verbose,
+                **({} if genome_kwargs is None else genome_kwargs)
+            )
 
         self._batch_size = batch_size
         self._seed, self._elapsed_epochs = seed, elapsed_epochs

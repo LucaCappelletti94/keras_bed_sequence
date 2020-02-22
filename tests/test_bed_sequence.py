@@ -1,11 +1,12 @@
 import os
 from keras_bed_sequence import BedSequence
+from ucsc_genomes_downloader import Genome
 
 
 def test_bed_sequence():
     batch_size = 32
     bed_sequence = BedSequence(
-        "hg19",
+        Genome("hg19", chromosomes="chr1"),
         "{cwd}/test.bed".format(
             cwd=os.path.dirname(os.path.abspath(__file__))
         ),
