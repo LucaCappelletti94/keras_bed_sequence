@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: keras-bed-sequence
-Version: 1.0.11
+Version: 1.0.12
 Summary: Lazily one-hot encoding bed sequences using Keras Sequence.
 Home-page: https://github.com/LucaCappelletti94/keras_bed_sequence
 Author: Luca Cappelletti
@@ -117,7 +117,7 @@ Description: keras_bed_sequence
         
             batch_size = 32
             bed_sequence = BedSequence(
-                "hg19",
+                Genome("hg19", chromosomes=["chr1"]),
                 "path/to/bed/files.bed",
                 batch_size
             )
