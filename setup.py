@@ -62,6 +62,7 @@ setup(
     # Add here the package dependencies
     install_requires=[
         "numpy",
+        "numba",
         "pandas",
         "tensorflow",
         "keras_mixed_sequence>=1.0.5",

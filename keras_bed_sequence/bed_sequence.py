@@ -1,11 +1,29 @@
 """Keras Sequence to lazily one-hot encode sequences from a given bed file."""
 from typing import Dict, Tuple, Union
-from tensorflow.keras.utils import Sequence, to_categorical
+from tensorflow.keras.utils import Sequence
 import pandas as pd
 import numpy as np
 from ucsc_genomes_downloader import Genome
 from keras_mixed_sequence.utils import sequence_length, batch_slice
 from .utils import nucleotides_to_numbers
+from numba import njit
+
+
+@njit
+def our_to_categorical(y, num_classes: int):
+    """
+    This is our implementation of to_categorical from keras.
+    This implementation runs 6 times faster.
+    """
+    batch_size, window_length = y.shape
+    zeros = np.zeros(
+        shape=(batch_size, window_length, num_classes),
+        dtype=np.float_
+    )
+    for i in range(batch_size):
+        for j in range(window_length):
+            zeros[i][j][y[i][j]] = 1
+    return zeros
 
 
 class BedSequence(Sequence):
@@ -290,6 +308,9 @@ class BedSequence(Sequence):
 
         self._nucleotides_number = len(nucleotides)
 
+        # Compiling JIT
+        self[0]
+
     def on_epoch_end(self):
         """Shuffle private bed object on every epoch end."""
         state = np.random.RandomState(seed=self._seed + self._elapsed_epochs)
@@ -342,7 +363,7 @@ class BedSequence(Sequence):
         ---------------
         Return Tuple containing X and Y numpy arrays corresponding to given batch index.
         """
-        return to_categorical(
+        return our_to_categorical(
             self._x[batch_slice(idx, self.batch_size)],
-            num_classes=self.nucleotides_number
+            num_classes=self.nucleotides_number,
         )
