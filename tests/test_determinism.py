@@ -46,6 +46,9 @@ def test_genomic_sequence_determinism():
         enhancers = pd.read_csv(enhancers_path)
         promoters = pd.read_csv(promoters_path)
 
+    enhancers = enhancers[:1000]
+    enhancers = enhancers[:1000]
+
     genome = Genome("hg19")
     for region in tqdm((enhancers, promoters), desc="Region types"):
         bed_sequence = BedSequence(
