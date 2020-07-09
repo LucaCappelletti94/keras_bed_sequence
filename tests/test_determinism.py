@@ -1,9 +1,12 @@
 import numpy as np
+import pandas as pd
 from keras_mixed_sequence import MixedSequence
 from keras_bed_sequence import BedSequence
 from crr_labels import fantom
 from ucsc_genomes_downloader import Genome
 from tqdm.auto import trange, tqdm
+import os
+
 
 def test_simple_determinism():
     classes = 10
@@ -25,11 +28,24 @@ def test_genomic_sequence_determinism():
     batch_size = 32
     epochs = 100
     cell_line = "GM12878"
-    enhancers, promoters = fantom(
-        # list of cell lines to be considered.
-        cell_lines=[cell_line],
-        window_size=200,  # window size to use for the various regions.
-    )
+    enhancers_path = "tests/enhancers.csv"
+    promoters_path = "tests/promoters.csv"
+    if any([
+        not os.path.exists(path)
+        for path in (enhancers_path, promoters_path)
+    ]):
+        enhancers, promoters = fantom(
+            # list of cell lines to be considered.
+            cell_lines=[cell_line],
+            window_size=200,  # window size to use for the various regions.
+            drop_always_inactive_rows=False
+        )
+        enhancers.to_csv(enhancers_path, index=False)
+        promoters.to_csv(promoters_path, index=False)
+    else:
+        enhancers = pd.read_csv(enhancers_path)
+        promoters = pd.read_csv(promoters_path)
+
     genome = Genome("hg19")
     for region in tqdm((enhancers, promoters), desc="Region types"):
         bed_sequence = BedSequence(
