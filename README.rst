@@ -70,7 +70,7 @@ to train our model:
 
 .. code:: python
 
-    model.fit_generator(
+    model.fit(
         mixed_sequence,
         steps_per_epoch=mixed_sequence.steps_per_epoch,
         epochs=2,
@@ -124,7 +124,7 @@ to train our model:
 
 .. code:: python
 
-    model.fit_generator(
+    model.fit(
         mixed_sequence,
         steps_per_epoch=mixed_sequence.steps_per_epoch,
         epochs=2,
@@ -202,7 +202,7 @@ to train our model:
 
 .. code:: python
 
-    model.fit_generator(
+    model.fit(
         mixed_sequence,
         steps_per_epoch=mixed_sequence.steps_per_epoch,
         epochs=2,

@@ -10,10 +10,24 @@ from numba import njit
 
 
 @njit
-def our_to_categorical(y, num_classes: int):
-    """
+def our_to_categorical(y: np.ndarray, num_classes: int, unknown_nucleotide_value: float) -> np.ndarray:
+    """Return one hot encoded batches.
+
     This is our implementation of to_categorical from keras.
     This implementation runs 6 times faster.
+
+    Parameters
+    -----------------
+    y:np.np.ndarray,
+        Vector of the batches. This vector has shape (batch_size, window_len)
+    num_classes: int,
+        Number of classes to one-hot encode.
+    unknown_nucleotide_value: float
+        Value to use for the unkown nucleotide class.
+
+    Returns
+    -----------------
+    One hot encoded batches.
     """
     batch_size, window_length = y.shape
     zeros = np.zeros(
@@ -22,7 +36,12 @@ def our_to_categorical(y, num_classes: int):
     )
     for i in range(batch_size):
         for j in range(window_length):
-            zeros[i][j][y[i][j]] = 1
+            class_number = y[i][j]
+            if class_number < 0:
+                for k in range(num_classes):
+                    zeros[i][j][k] = unknown_nucleotide_value
+            else:
+                zeros[i][j][class_number] = 1
     return zeros
 
 
@@ -79,7 +98,7 @@ class BedSequence(Sequence):
 
     .. code:: python
 
-        model.fit_generator(
+        model.fit(
             mixed_sequence,
             steps_per_epoch=mixed_sequence.steps_per_epoch,
             epochs=2,
@@ -133,7 +152,7 @@ class BedSequence(Sequence):
 
     .. code:: python
 
-        model.fit_generator(
+        model.fit(
             mixed_sequence,
             steps_per_epoch=mixed_sequence.steps_per_epoch,
             epochs=2,
@@ -211,7 +230,7 @@ class BedSequence(Sequence):
 
     .. code:: python
 
-        model.fit_generator(
+        model.fit(
             mixed_sequence,
             steps_per_epoch=mixed_sequence.steps_per_epoch,
             epochs=2,
@@ -228,6 +247,7 @@ class BedSequence(Sequence):
         batch_size: int = 32,
         verbose: bool = True,
         nucleotides: str = "actg",
+        unknown_nucleotide_value: Union[float, str] = "auto",
         seed: int = 42,
         elapsed_epochs: int = 0,
         genome_kwargs: Dict = None
@@ -249,6 +269,10 @@ class BedSequence(Sequence):
             Whetever to show a loading bar.
         nucleotides: str = "actg",
             Nucleotides to consider when one-hot encoding.
+        unknown_nucleotide_value: Union[float, str] = "auto",
+            Value to use for nucleotides that are not in nucleotides set,
+            like for instance "n" in the default nucleotides. The defaut
+            behaviour, enabled by "auto", sets as value 1/len(nucleotides).
         seed: int = 42,
             Starting seed to use if shuffling the dataset.
         elapsed_epochs: int = 0,
@@ -293,27 +317,29 @@ class BedSequence(Sequence):
 
         self._batch_size = batch_size
         self._seed, self._elapsed_epochs = seed, elapsed_epochs
+        self._nucleotides_number = len(nucleotides)
+        if isinstance(unknown_nucleotide_value, str):
+            self._unknown_nucleotide_value = 1 / len(nucleotides)
+        else:
+            self._unknown_nucleotide_value = unknown_nucleotide_value
 
         # We extract the sequences of the bed file from
         # the given genome.
-        sequences = self._genome.bed_to_sequence(bed).sequence
+        sequences = self._genome.bed_to_sequence(
+            bed).sequence.values.astype(str)
 
         # We encode the nucleotide sequences
         # as small integers
         self._x = nucleotides_to_numbers(
             nucleotides,
-            sequences,
-            verbose=verbose
+            sequences
         )
-
-        self._nucleotides_number = len(nucleotides)
-
-        # Compiling JIT
-        self[0]
 
     def on_epoch_end(self):
         """Shuffle private bed object on every epoch end."""
-        state = np.random.RandomState(seed=self._seed + self._elapsed_epochs)
+        state = np.random.RandomState( # pylint: disable=no-member
+            seed=self._seed + self._elapsed_epochs
+        )  
         self._elapsed_epochs += 1
         state.shuffle(self._x)
 
@@ -366,4 +392,5 @@ class BedSequence(Sequence):
         return our_to_categorical(
             self._x[batch_slice(idx, self.batch_size)],
             num_classes=self.nucleotides_number,
+            unknown_nucleotide_value=self._unknown_nucleotide_value
         )

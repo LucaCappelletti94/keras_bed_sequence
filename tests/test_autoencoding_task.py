@@ -31,7 +31,7 @@ def test_model_autoencoder():
     mixed_sequence = MixedSequence(bed_sequence, bed_sequence, batch_size)
     assert bed_sequence.steps_per_epoch == mixed_sequence.steps_per_epoch
     model = build_model()
-    model.fit_generator(
+    model.fit(
         mixed_sequence,
         steps_per_epoch=mixed_sequence.steps_per_epoch,
         epochs=2,

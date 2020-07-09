@@ -41,7 +41,7 @@ def test_classification_task():
         batch_size=bed_sequence.batch_size
     )
     model = build_model()
-    model.fit_generator(
+    model.fit(
         mixed_sequence,
         steps_per_epoch=mixed_sequence.steps_per_epoch,
         epochs=2,

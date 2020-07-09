@@ -1,12 +1,10 @@
-from typing import Dict
-import math
-from multiprocessing import Pool, cpu_count
-from tqdm.auto import tqdm
-import pandas as pd
+from typing import List
 import numpy as np
+from numba import typed, types, prange, njit
 
 
-def _nucleotides_to_numbers(nucleotides: str, sequences: pd.Series) -> np.ndarray:
+@njit(parallel=True)
+def nucleotides_to_numbers(nucleotides: str, sequences: np.ndarray) -> np.ndarray:
     """Return sequences encoded as small integers.
 
     Parameters
@@ -14,62 +12,28 @@ def _nucleotides_to_numbers(nucleotides: str, sequences: pd.Series) -> np.ndarra
     nucleotides: str,
         Nucleotides to take in consideration when encoding,
         for instance "acgt".
-    sequences: pd.Series,
-        Pandas series with the nucleotide sequences.
+    sequences: np.ndarray,
+        Numpy array with the nucleotide sequences.
 
     Returns
     --------------------------
     Returns numpy ndarray containing the encoded nucleotides.
     """
-    return np.array([
-        [
-            nucleotides.find(nucleotide)
-            for nucleotide in sequence.lower()
-        ] for sequence in sequences
-    ], dtype=np.int8)
+    nucleotides_mapping = typed.Dict.empty(types.string, types.int8)
+    for i, n in enumerate(nucleotides):
+        nucleotides_mapping[n] = np.int8(i)
+        nucleotides_mapping[n.upper()] = np.int8(i)
 
+    total_sequences = len(sequences)
+    sequence_length = len(sequences[0])
 
-def _nucleotides_to_numbers_wrapper(task: Dict) -> np.ndarray:
-    return _nucleotides_to_numbers(**task)
+    values = np.empty((total_sequences, sequence_length), dtype=np.int8)
+    for i in prange(total_sequences):  # pylint: disable=not-an-iterable
+        for j in prange(sequence_length):  # pylint: disable=not-an-iterable
+            nucleotide = str(sequences[i][j])
+            if nucleotide in nucleotides_mapping:
+                values[i][j] = nucleotides_mapping[nucleotide]
+            else:
+                values[i][j] = -1
 
-
-def nucleotides_to_numbers(nucleotides: str, sequences: pd.Series, verbose: bool) -> np.ndarray:
-    """Return sequences encoded as small integers.
-
-    Parameters
-    --------------------------
-    nucleotides: str,
-        Nucleotides to take in consideration when encoding,
-        for instance "acgt".
-    sequences: pd.Series,
-        Pandas series with the nucleotide sequences.
-    verbose: bool,
-        Whetever to show the loading bar while processing.
-
-    Returns
-    --------------------------
-    Returns numpy ndarray containing the encoded nucleotides.
-    """
-    total = math.ceil(len(sequences)/10000)
-    tasks = (
-        {
-            "nucleotides": nucleotides,
-            "sequences": sequences[10000*i:10000*(i+1)]
-        }
-        for i in range(total)
-    )
-    with Pool(min(cpu_count(), total)) as p:
-        encoded = np.vstack(list(tqdm(
-            p.imap(
-                _nucleotides_to_numbers_wrapper,
-                tasks
-            ),
-            desc="Converting nucleotides to numeric classes",
-            disable=not verbose,
-            dynamic_ncols=True,
-            leave=False,
-            total=total
-        )))
-        p.close()
-        p.join()
-    return encoded
+    return values
