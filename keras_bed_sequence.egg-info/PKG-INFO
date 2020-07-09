@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: keras-bed-sequence
-Version: 1.1.0
+Version: 1.1.2
 Summary: Lazily one-hot encoding bed sequences using Keras Sequence.
 Home-page: https://github.com/LucaCappelletti94/keras_bed_sequence
 Author: Luca Cappelletti
@@ -78,7 +78,7 @@ Description: keras_bed_sequence
         
         .. code:: python
         
-            model.fit_generator(
+            model.fit(
                 mixed_sequence,
                 steps_per_epoch=mixed_sequence.steps_per_epoch,
                 epochs=2,
@@ -132,7 +132,7 @@ Description: keras_bed_sequence
         
         .. code:: python
         
-            model.fit_generator(
+            model.fit(
                 mixed_sequence,
                 steps_per_epoch=mixed_sequence.steps_per_epoch,
                 epochs=2,
@@ -210,7 +210,7 @@ Description: keras_bed_sequence
         
         .. code:: python
         
-            model.fit_generator(
+            model.fit(
                 mixed_sequence,
                 steps_per_epoch=mixed_sequence.steps_per_epoch,
                 epochs=2,

@@ -12,3 +12,4 @@ coveralls
 validate_version_code
 codacy-coverage
 silence_tensorflow
+crr_labels
