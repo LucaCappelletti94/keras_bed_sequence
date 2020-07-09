@@ -19,3 +19,4 @@ coverage.xml
 *.ipynb
 genomes
 .pytest_cache
+fantom_data
