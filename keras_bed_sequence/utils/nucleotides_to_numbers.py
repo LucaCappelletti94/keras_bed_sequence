@@ -1,6 +1,8 @@
 from typing import List
 import numpy as np
-from numba import typed, types, prange, njit
+from numba import typed, types, njit, prange
+
+nucleotides_mapping_types = (types.unicode_type, types.int64)
 
 
 @njit(parallel=True)
@@ -19,17 +21,17 @@ def nucleotides_to_numbers(nucleotides: str, sequences: np.ndarray) -> np.ndarra
     --------------------------
     Returns numpy ndarray containing the encoded nucleotides.
     """
-    nucleotides_mapping = typed.Dict.empty(types.string, types.int8)
+    nucleotides_mapping = typed.Dict.empty(*nucleotides_mapping_types)
     for i, n in enumerate(nucleotides):
-        nucleotides_mapping[n] = np.int8(i)
-        nucleotides_mapping[n.upper()] = np.int8(i)
+        nucleotides_mapping[str(n)] = i
+        nucleotides_mapping[str(n.upper())] = i
 
     total_sequences = len(sequences)
     sequence_length = len(sequences[0])
 
     values = np.empty((total_sequences, sequence_length), dtype=np.int8)
     for i in prange(total_sequences):  # pylint: disable=not-an-iterable
-        for j in prange(sequence_length):  # pylint: disable=not-an-iterable
+        for j in range(sequence_length):
             nucleotide = str(sequences[i][j])
             if nucleotide in nucleotides_mapping:
                 values[i][j] = nucleotides_mapping[nucleotide]

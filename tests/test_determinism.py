@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from keras_mixed_sequence import MixedSequence
+from keras_mixed_sequence import MixedSequence, VectorSequence
 from keras_bed_sequence import BedSequence
 from crr_labels import fantom
 from ucsc_genomes_downloader import Genome
@@ -8,69 +8,22 @@ from tqdm.auto import trange, tqdm
 import os
 
 
-def test_simple_determinism():
-    classes = 10
-    number = 100000
-    epochs = 100
-    x = np.arange(0, number, dtype=np.int64)
-    y = np.random.randint(0, classes, size=number)
-
-    ms = MixedSequence(x, y, batch_size=100)
-
-    for _ in range(epochs):
-        for step in range(ms.steps_per_epoch):
-            xi, yi = ms[step]
-            assert (y[xi.astype(int)] == yi).all()
-        ms.on_epoch_end()
-
-
 def test_genomic_sequence_determinism():
     batch_size = 32
-    epochs = 100
-    cell_line = "GM12878"
-    enhancers_path = "tests/enhancers.csv"
-    promoters_path = "tests/promoters.csv"
-    if any([
-        not os.path.exists(path)
-        for path in (enhancers_path, promoters_path)
-    ]):
-        enhancers, promoters = fantom(
-            # list of cell lines to be considered.
-            cell_lines=[cell_line],
-            window_size=200,  # window size to use for the various regions.
-            drop_always_inactive_rows=False
-        )
-        enhancers.to_csv(enhancers_path, index=False)
-        promoters.to_csv(promoters_path, index=False)
-    else:
-        enhancers = pd.read_csv(enhancers_path)
-        promoters = pd.read_csv(promoters_path)
+    epochs = 5
+    enhancers = pd.read_csv("tests/enhancers.csv")
+    promoters = pd.read_csv("tests/promoters.csv")
 
-    enhancers = enhancers[:1000]
-    enhancers = enhancers[:1000]
-
-    genome = Genome("hg19")
+    genome = Genome("hg19", chromosomes=["chr1"])
     for region in tqdm((enhancers, promoters), desc="Region types"):
-        bed_sequence = BedSequence(
-            genome,
-            region,
-            batch_size
-        )
         y = np.arange(0, len(region), dtype=np.int64)
         mixed_sequence = MixedSequence(
-            x=bed_sequence,
-            y=y,
-            batch_size=batch_size
-        )
-        reference_bed_sequence = BedSequence(
-            genome,
-            region,
-            len(y)
+            x=BedSequence(genome, region, batch_size),
+            y=VectorSequence(y, batch_size)
         )
         reference_mixed_sequence = MixedSequence(
-            x=reference_bed_sequence,
-            y=y,
-            batch_size=len(y)
+            x=BedSequence(genome, region, len(region)),
+            y=VectorSequence(y, len(region))
         )
         X, _ = reference_mixed_sequence[0]
         for _ in trange(epochs, desc="Epochs", leave=False):
