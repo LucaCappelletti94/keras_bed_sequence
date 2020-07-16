@@ -10,4 +10,5 @@ keras_bed_sequence.egg-info/dependency_links.txt
 keras_bed_sequence.egg-info/requires.txt
 keras_bed_sequence.egg-info/top_level.txt
 keras_bed_sequence/utils/__init__.py
+keras_bed_sequence/utils/fast_to_categorical.py
 keras_bed_sequence/utils/nucleotides_to_numbers.py
