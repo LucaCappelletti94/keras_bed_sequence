@@ -54,6 +54,7 @@ class BedSequence(VectorSequence):
 
         self._window_length = (bed.chromEnd - bed.chromStart).values[0]
         self._genome = assembly
+        self._nucleotides = nucleotides
         self._nucleotides_number = len(nucleotides)
         self._unknown_nucleotide_value = unknown_nucleotide_value
 
@@ -62,7 +63,7 @@ class BedSequence(VectorSequence):
         sequences = self._genome.bed_to_sequence(bed).sequence.values.astype(str)
 
         super().__init__(
-            nucleotides_to_numbers(nucleotides, sequences),
+            nucleotides_to_numbers(self.nucleotides, sequences),
             batch_size,
             seed=seed,
             elapsed_epochs=elapsed_epochs
@@ -73,6 +74,11 @@ class BedSequence(VectorSequence):
         """Return number of nucleotides in a window."""
         return self._window_length
 
+    @property
+    def nucleotides(self) -> int:
+        """Return number of nucleotides considered."""
+        return self._nucleotides
+    
     @property
     def nucleotides_number(self) -> int:
         """Return number of nucleotides considered."""
