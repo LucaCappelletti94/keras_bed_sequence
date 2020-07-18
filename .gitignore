@@ -20,3 +20,4 @@ coverage.xml
 genomes
 .pytest_cache
 fantom_data
+htmlcov
