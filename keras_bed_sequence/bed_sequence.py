@@ -60,8 +60,8 @@ class BedSequence(VectorSequence):
 
         # We extract the sequences of the bed file from
         # the given genome.
-        sequences = self._genome.bed_to_sequence(bed).sequence.values.astype(str)
-
+        sequences = self._genome.bed_to_sequence(bed)
+        
         super().__init__(
             nucleotides_to_numbers(self.nucleotides, sequences),
             batch_size,
