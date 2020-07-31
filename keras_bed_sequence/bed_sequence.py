@@ -18,7 +18,8 @@ class BedSequence(VectorSequence):
         nucleotides: str = "actg",
         unknown_nucleotide_value: float = 0.25,
         seed: int = 42,
-        elapsed_epochs: int = 0
+        elapsed_epochs: int = 0,
+        shuffle: bool = True
     ):
         """Return new BedSequence object.
 
@@ -39,6 +40,8 @@ class BedSequence(VectorSequence):
             Starting seed to use if shuffling the dataset.
         elapsed_epochs: int = 0,
             Number of elapsed epochs to init state of generator.
+        shuffle: bool = True,
+            Wethever to shuffle or not the sequence.
 
         Raises
         --------------------
@@ -66,7 +69,8 @@ class BedSequence(VectorSequence):
             nucleotides_to_numbers(self.nucleotides, sequences),
             batch_size,
             seed=seed,
-            elapsed_epochs=elapsed_epochs
+            elapsed_epochs=elapsed_epochs,
+            shuffle=shuffle
         )
 
     @property
@@ -78,7 +82,7 @@ class BedSequence(VectorSequence):
     def nucleotides(self) -> int:
         """Return number of nucleotides considered."""
         return self._nucleotides
-    
+
     @property
     def nucleotides_number(self) -> int:
         """Return number of nucleotides considered."""

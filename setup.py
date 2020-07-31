@@ -66,7 +66,7 @@ setup(
         "numba>=0.50",
         "pandas",
         "tensorflow",
-        "keras_mixed_sequence>=1.0.5",
+        "keras_mixed_sequence>=1.0.18",
         "ucsc_genomes_downloader>=1.1.25"
     ],
     extras_require=extras,

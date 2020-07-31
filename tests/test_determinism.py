@@ -22,8 +22,8 @@ def test_genomic_sequence_determinism():
             y=VectorSequence(y, batch_size)
         )
         reference_mixed_sequence = MixedSequence(
-            x=BedSequence(genome, region, len(region)),
-            y=VectorSequence(y, len(region))
+            x=BedSequence(genome, region, batch_size=len(region), shuffle=False),
+            y=VectorSequence(y, batch_size=len(region), shuffle=False)
         )
         X, _ = reference_mixed_sequence[0]
         for _ in trange(epochs, desc="Epochs", leave=False):
