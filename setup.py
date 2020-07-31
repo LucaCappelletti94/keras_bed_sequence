@@ -63,11 +63,11 @@ setup(
     # Add here the package dependencies
     install_requires=[
         "numpy",
-        "numba",
+        "numba>=0.50",
         "pandas",
         "tensorflow",
         "keras_mixed_sequence>=1.0.5",
-        "ucsc_genomes_downloader>=1.1.13"
+        "ucsc_genomes_downloader>=1.1.25"
     ],
     extras_require=extras,
 )
