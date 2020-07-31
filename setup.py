@@ -53,6 +53,7 @@ setup(
     # Choose your license
     license='MIT',
     include_package_data=True,
+    python_requires='>3.5.2',
     classifiers=[
         'Development Status :: 3 - Alpha',
         'License :: OSI Approved :: MIT License',
@@ -66,7 +67,7 @@ setup(
         "numba>=0.50",
         "pandas",
         "tensorflow",
-        "keras_mixed_sequence>=1.0.18",
+        "keras_mixed_sequence>=1.0.19",
         "ucsc_genomes_downloader>=1.1.25"
     ],
     extras_require=extras,
