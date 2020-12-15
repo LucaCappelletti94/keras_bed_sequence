@@ -12,7 +12,7 @@ class BedSequence(VectorSequence):
 
     def __init__(
         self,
-        assembly: Genome,
+        genome: Genome,
         bed: pd.DataFrame,
         batch_size: int,
         nucleotides: str = "actg",
@@ -25,7 +25,7 @@ class BedSequence(VectorSequence):
 
         Parameters
         --------------------
-        assembly: Genome,
+        genome: Genome,
             Genomic assembly from ucsc from which to extract sequences.
         bed: pd.DataFrame,
             Pandas DataFrame containing minimal bed columns,
@@ -56,14 +56,13 @@ class BedSequence(VectorSequence):
             )
 
         self._window_length = (bed.chromEnd - bed.chromStart).values[0]
-        self._genome = assembly
         self._nucleotides = nucleotides
         self._nucleotides_number = len(nucleotides)
         self._unknown_nucleotide_value = unknown_nucleotide_value
 
         # We extract the sequences of the bed file from
         # the given genome.
-        sequences = np.array(self._genome.bed_to_sequence(bed), dtype=str)
+        sequences = np.array(genome.bed_to_sequence(bed), dtype=str)
 
         super().__init__(
             nucleotides_to_numbers(self.nucleotides, sequences),
