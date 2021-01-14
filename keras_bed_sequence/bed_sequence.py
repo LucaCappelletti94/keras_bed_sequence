@@ -17,7 +17,7 @@ class BedSequence(VectorSequence):
         batch_size: int,
         nucleotides: str = "actg",
         unknown_nucleotide_value: float = 0.25,
-        seed: int = 42,
+        random_state: int = 42,
         elapsed_epochs: int = 0,
         shuffle: bool = True
     ):
@@ -36,8 +36,8 @@ class BedSequence(VectorSequence):
             Nucleotides to consider when one-hot encoding.
         unknown_nucleotide_value: float = 0.25,
             The default value to use for encoding unknown nucleotides.
-        seed: int = 42,
-            Starting seed to use if shuffling the dataset.
+        random_state: int = 42,
+            Starting random_state to use if shuffling the dataset.
         elapsed_epochs: int = 0,
             Number of elapsed epochs to init state of generator.
         shuffle: bool = True,
@@ -67,7 +67,7 @@ class BedSequence(VectorSequence):
         super().__init__(
             nucleotides_to_numbers(self.nucleotides, sequences),
             batch_size,
-            seed=seed,
+            random_state=random_state,
             elapsed_epochs=elapsed_epochs,
             shuffle=shuffle
         )
