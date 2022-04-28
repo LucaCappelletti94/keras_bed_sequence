@@ -66,7 +66,6 @@ setup(
         "numpy",
         "numba>=0.50",
         "pandas",
-        "tensorflow",
         "keras_mixed_sequence>=1.0.19",
         "ucsc_genomes_downloader>=1.1.25"
     ],
